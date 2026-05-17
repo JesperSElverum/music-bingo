@@ -39,7 +39,6 @@ export default function PlayerRoom() {
   const nav = useNavigate();
   const [snapshot, setSnapshot] = useState<RoomSnapshot | null>(null);
   const [board, setBoard] = useState<PlayerBoard | null>(null);
-  const [currentTrack, setCurrentTrack] = useState<TrackInfo | null>(null);
   const [trackMeta, setTrackMeta] = useState<Map<string, TrackInfo>>(new Map());
   const [status, setStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting');
   const [claimFeedback, setClaimFeedback] = useState<'pending' | 'accepted' | 'rejected' | null>(null);
@@ -82,18 +81,6 @@ export default function PlayerRoom() {
     const onGoal = ({ currentGoal }: { currentGoal: GoalValue }) => {
       setSnapshot((s) => s ? { ...s, currentGoal } : s);
     };
-    const onTrackChanged = ({ track }: { track: TrackInfo }) => {
-      setCurrentTrack(track);
-      setTrackMeta((m) => {
-        const next = new Map(m);
-        next.set(track.id, track);
-        return next;
-      });
-      setSnapshot((s) => s ? {
-        ...s, currentTrackId: track.id,
-        playedTrackIds: Array.from(new Set([...s.playedTrackIds, track.id])),
-      } : s);
-    };
     const onBoard = (b: PlayerBoard) => setBoard(b);
     const onStarted = ({ snapshot: snap }: { snapshot: RoomSnapshot }) => setSnapshot(snap);
     const onEnded = () => setSnapshot((s) => s ? { ...s, status: 'ended' } : s);
@@ -106,7 +93,6 @@ export default function PlayerRoom() {
 
     socket.on('room:players', onPlayers);
     socket.on('room:goal-changed', onGoal);
-    socket.on('room:track-changed', onTrackChanged);
     socket.on('player:board', onBoard);
     socket.on('room:started', onStarted);
     socket.on('room:ended', onEnded);
@@ -117,7 +103,6 @@ export default function PlayerRoom() {
       socket.off('connect', attach);
       socket.off('room:players', onPlayers);
       socket.off('room:goal-changed', onGoal);
-      socket.off('room:track-changed', onTrackChanged);
       socket.off('player:board', onBoard);
       socket.off('room:started', onStarted);
       socket.off('room:ended', onEnded);
@@ -231,18 +216,6 @@ export default function PlayerRoom() {
           <span className="text-xs text-muted">Reconnecting…</span>
         )}
       </div>
-      <GlassCard padded={false} className="px-3 py-2">
-        <div className="text-xs uppercase tracking-wider text-muted">Now playing</div>
-        {currentTrack ? (
-          <>
-            <div className="font-medium truncate">{currentTrack.name}</div>
-            <div className="text-sm text-muted truncate">{currentTrack.artists.join(', ')}</div>
-          </>
-        ) : (
-          <div className="text-sm text-muted">Waiting for the host…</div>
-        )}
-      </GlassCard>
-
       {board ? (
         <BingoBoard
           board={board.board}

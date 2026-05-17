@@ -336,7 +336,7 @@ function ClaimModal({ claim, trackMeta, onAccept, onReject }: ClaimProps) {
       : `${claim.currentGoal} line${claim.currentGoal === 1 ? '' : 's'}`;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-3 bg-black/40">
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-3 bg-black/40 backdrop-blur-md">
       <div className="glass-surface rounded-2xl p-4 w-full max-w-md">
         <div className="flex items-center justify-between mb-2">
           <h3 className="font-semibold">{claim.name} claims BINGO</h3>

@@ -1,0 +1,42 @@
+@import 'tailwindcss';
+@import './themes.css';
+
+@theme inline {
+  --color-bg: rgb(var(--c-bg) / <alpha-value>);
+  --color-surface: rgb(var(--c-surface) / <alpha-value>);
+  --color-surface-2: rgb(var(--c-surface-2) / <alpha-value>);
+  --color-border: rgb(var(--c-border) / <alpha-value>);
+  --color-text: rgb(var(--c-text) / <alpha-value>);
+  --color-muted: rgb(var(--c-muted) / <alpha-value>);
+  --color-accent: rgb(var(--c-accent) / <alpha-value>);
+  --color-accent-2: rgb(var(--c-accent-2) / <alpha-value>);
+  --color-success: rgb(var(--c-success) / <alpha-value>);
+  --color-danger: rgb(var(--c-danger) / <alpha-value>);
+
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Display', Inter, system-ui, sans-serif;
+  --font-display: 'SF Pro Display', Inter, system-ui, sans-serif;
+
+  --shadow-glow: 0 0 24px rgb(var(--c-accent) / 0.55), 0 0 4px rgb(var(--c-accent) / 0.9);
+  --shadow-soft: 0 8px 32px rgb(0 0 0 / 0.08);
+
+  --animate-pulse-glow: pulseGlow 2s ease-in-out infinite;
+  --animate-shimmer: shimmer 6s linear infinite;
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 8px rgb(var(--c-accent) / 0.35); }
+  50% { box-shadow: 0 0 28px rgb(var(--c-accent) / 0.75); }
+}
+
+@keyframes shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}

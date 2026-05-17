@@ -10,7 +10,7 @@ export default function App() {
   return (
     <div className="min-h-full flex flex-col">
       <header className="px-4 sm:px-6 pt-4 pb-2 flex items-center justify-between">
-        <Link to="/" className="headline text-xl tracking-tight">
+        <Link to="/" className="text-xl font-bold tracking-tight">
           <span className="bg-clip-text text-transparent bg-gradient-to-r from-accent to-accent-2">
             Music Bingo
           </span>

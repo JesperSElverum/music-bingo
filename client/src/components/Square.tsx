@@ -47,7 +47,18 @@ export default function Square({
         </>
       )}
       {state === 'marked' && !isFree && (
-        <span className="absolute right-1 top-1 text-xs">✓</span>
+        <svg
+          className="absolute right-1 top-1 w-3 h-3"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          aria-hidden="true"
+        >
+          <polyline points="20 6 9 17 4 12" />
+        </svg>
       )}
       {state === 'possible' && !isFree && (
         <span className="absolute right-1 top-1 text-xs opacity-75">?</span>

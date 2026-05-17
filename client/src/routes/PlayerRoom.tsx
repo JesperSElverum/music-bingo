@@ -21,8 +21,8 @@ const DISPLAY_LINES: number[][] = (() => {
 })();
 
 function cycleState(s: SquareState): SquareState {
-  if (s === 'empty') return 'possible';
-  if (s === 'possible') return 'marked';
+  if (s === 'empty') return 'marked';
+  if (s === 'marked') return 'possible';
   return 'empty';
 }
 

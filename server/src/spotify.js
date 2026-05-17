@@ -100,13 +100,17 @@ export async function fetchMyPlaylists(accessToken) {
   return out;
 }
 
+export async function whoAmI(accessToken) {
+  return spotifyGet('/me', accessToken);
+}
+
 export async function fetchPlaylistTracks(playlistId, accessToken) {
   const out = [];
-  let url = `/playlists/${playlistId}/tracks?limit=100&fields=next,items(track(id,uri,name,artists(name),is_local,type))`;
+  let url = `/playlists/${playlistId}/items?limit=100`;
   while (url) {
     const page = await spotifyGet(url, accessToken);
-    for (const it of page.items) {
-      const t = it?.track;
+    for (const entry of page.items) {
+      const t = entry?.item ?? entry?.track; // new API uses `item`; fall back to legacy `track`
       if (!t?.id || t.is_local || t.type !== 'track' || !t.uri) continue;
       out.push({
         id: t.id,

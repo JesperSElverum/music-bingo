@@ -98,8 +98,33 @@ export async function transferPlaybackTo(deviceId: string) {
   await spotifyApi('PUT', '/me/player', { device_ids: [deviceId], play: false });
 }
 
+function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
 export async function startPlayback(deviceId: string, uris: string[]) {
-  await spotifyApi('PUT', `/me/player/play?device_id=${encodeURIComponent(deviceId)}`, { uris });
+  // Spotify sometimes returns 404 "Device not found" if the SDK device hasn't
+  // finished registering as the active device yet. Retry a few times.
+  const delays = [0, 400, 800, 1500];
+  let lastErr: unknown = null;
+  for (const wait of delays) {
+    if (wait) await sleep(wait);
+    try {
+      await spotifyApi(
+        'PUT',
+        `/me/player/play?device_id=${encodeURIComponent(deviceId)}`,
+        { uris },
+      );
+      return;
+    } catch (e) {
+      lastErr = e;
+      const msg = e instanceof Error ? e.message : '';
+      if (!msg.includes('404')) throw e;
+      // re-transfer playback to the SDK device, then retry
+      try { await transferPlaybackTo(deviceId); } catch { /* swallow */ }
+    }
+  }
+  throw lastErr instanceof Error ? lastErr : new Error('Could not start playback');
 }
 
 export async function togglePlay(player: SpotifyPlayer) {

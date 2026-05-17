@@ -16,7 +16,7 @@ import { Server as IOServer } from 'socket.io';
 
 import {
   buildAuthorizeUrl, newState, exchangeCode, refreshToken,
-  fetchMyPlaylists, fetchPlaylistTracks,
+  fetchMyPlaylists, fetchPlaylistTracks, whoAmI,
 } from './spotify.js';
 import { registerSocketHandlers } from './socket.js';
 import { startGc } from './rooms.js';
@@ -86,6 +86,18 @@ app.post('/api/spotify/refresh', async (req, res) => {
   } catch (e) {
     console.error('refresh error', e);
     res.status(500).json({ error: 'refresh_failed' });
+  }
+});
+
+app.get('/api/spotify/me', async (req, res) => {
+  try {
+    const token = req.header('authorization')?.replace(/^Bearer\s+/i, '') ?? '';
+    if (!token) return res.status(401).json({ error: 'missing_token' });
+    const me = await whoAmI(token);
+    res.json(me);
+  } catch (e) {
+    console.error('me error', e);
+    res.status(e.status || 500).json({ error: 'me_failed', detail: e.message });
   }
 });
 
